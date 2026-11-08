@@ -1,0 +1,17 @@
+[Unit]
+Description=SwarmPool Spark Node
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+Environment=SWARMPOOL_API=https://swarmpool.duckdns.org
+Environment=SWARMPOOL_RUNTIME=sim
+Environment=SWARMPOOL_MODELS=sim-model
+Environment=SWARMPOOL_TIER=1
+ExecStart=/usr/local/bin/spark up
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,18 @@
+# 环境变量与密钥
+.env
+*.env
+!.env.example
+
+# 节点密钥与本地测试产物
+*.key
+*.dump
+gpu-test/
+!gpu-test/gen_server.py
+
+# 二进制
+*.exe
+spark-linux-amd64
+
+# 系统文件
+Thumbs.db
+.DS_Store

@@ -1,0 +1,64 @@
+# SwarmPool 主控面 compose 骨架（部署于 vps87 / yeziyun）
+# 运维手册见 ops/README-server.md
+name: swarmpool
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: swarmpool-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: swarmpool
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: swarmpool
+    # 2G 内存机器上的轻量调优
+    command: >
+      postgres
+      -c shared_buffers=128MB
+      -c effective_cache_size=512MB
+      -c maintenance_work_mem=32MB
+      -c work_mem=4MB
+      -c max_connections=60
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"   # 本机服务访问
+      - "10.10.0.2:5432:5432"   # WireGuard 内网：vps107 备份专用
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U swarmpool -d swarmpool"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: swarmpool-redis
+    restart: unless-stopped
+    command: redis-server --save 60 1 --maxmemory 128mb --maxmemory-policy noeviction
+    volumes:
+      - ./data/redis:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # P0 单体：调度器/API/账本（当前本地构建 swarmpool-core:dev，发布后切 ghcr 镜像）
+  core:
+    image: swarmpool-core:dev
+    container_name: swarmpool-core
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://swarmpool:${POSTGRES_PASSWORD}@postgres:5432/swarmpool
+      REDIS_URL: redis://redis:6379/0
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
+      LISTEN_ADDR: ":8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:8080"
