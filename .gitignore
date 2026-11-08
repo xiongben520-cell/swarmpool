@@ -2,6 +2,7 @@
 .env
 *.env
 !.env.example
+.mimosa/
 
 # 节点密钥与本地测试产物
 *.key
