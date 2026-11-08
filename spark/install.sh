@@ -9,7 +9,7 @@ MODELS="${SWARMPOOL_MODELS:-sim-model}"
 RUNTIME="${SWARMPOOL_RUNTIME:-auto}"
 TIER="${SWARMPOOL_TIER:-1}"
 # 二进制从 GitHub Release 分发（版本化+可校验），不再走平台服务器
-BASE_URL="${SWARMPOOL_BASE:-https://github.com/swarmpool/swarmpool/releases/latest/download}"
+BASE_URL="${SWARMPOOL_BASE:-https://github.com/xiongben520-cell/swarmpool/releases/latest/download}"
 
 # ---- 1. GPU 检测（只读检测，不触碰系统其它数据）----
 GPU_INFO=""

@@ -8,7 +8,7 @@
 
 ```bash
 # 1. 下载安装脚本并审阅（推荐；脚本做什么见文件头注释）
-curl -fsSL https://raw.githubusercontent.com/swarmpool/swarmpool/main/spark/install.sh -o install.sh
+curl -fsSL https://raw.githubusercontent.com/xiongben520-cell/swarmpool/main/spark/install.sh -o install.sh
 # 2. 执行（无 N 卡自动进入 sim 模式；环境变量见脚本头）
 sh install.sh
 # 3. 自检
